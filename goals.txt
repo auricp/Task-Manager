@@ -1,0 +1,25 @@
+Need to implement all backend functionality. 
+
+Task priority:
+AUTH (sign in, etc)
+TASKS
+USERS (getting user info)
+
+TASK ROUTES:
+
+
+Getting all tasks
+Adding a task (to database)
+updating a task
+Deleting a task
+
+
+USER ROUTES:
+Getting all users (admin only)
+Getting specific user information
+
+
+AUTHENTICATION ROUTES:
+Sign up
+Sign in a user
+Sign out a user
