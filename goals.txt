@@ -15,11 +15,11 @@ Deleting a task
 
 
 USER ROUTES:
-Getting all users (admin only)
-Getting specific user information
+Getting all users (admin only): need to add admin auth
+Getting specific user information (authorized user): DONE
 
 
 AUTHENTICATION ROUTES:
-Sign up
-Sign in a user
+Sign up: DONE
+Sign in a user: DONE
 Sign out a user
