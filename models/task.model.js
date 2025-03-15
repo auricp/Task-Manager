@@ -9,7 +9,7 @@ user: user who created the task
 
 */
 
-const taskSchema = mongoose.Schema({
+const taskSchema = new mongoose.Schema({
 
     name: {
         type: String,
@@ -37,7 +37,7 @@ const taskSchema = mongoose.Schema({
         required: true,
         index: true
     }
-})
+}, { timestamps: true })
 
 
 const Task = mongoose.model('Task', taskSchema);

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import Blacklist from '../models/blacklist.model.js';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/env.js';
 
 
@@ -101,6 +102,38 @@ export const signIn = async (req, res, next) => {
         })
 
     } catch(error){
+        next(error);
+    }
+}
+
+
+export const signOut = async (req, res, next) => {
+
+    try{
+        // blacklist the users token 
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (!token) {
+            const error = new Error('No token provided')
+            error.statusCode = 401;
+            throw error;
+        }
+        
+
+        // create an entry for the blacklisted token and its expiry date (when it expires it will be removed)
+        await Blacklist.create({
+            token,
+            expiresAt: jwt.decode(token).exp * 1000
+        });
+
+        res.status(200).send({
+            success: true,
+            message: "User has been signed out successfully!"
+        });
+
+
+    } catch (error) {
         next(error);
     }
 }

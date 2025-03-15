@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env.js';
 import User from '../models/user.model.js' 
+import Blacklist from '../models/blacklist.model.js';
 
 
 
@@ -20,6 +21,14 @@ try{
         error.statusCode = 401;
         throw error;
     }
+
+    // need to check if token is blacklisted
+    const blacklisted = Blacklist.find({ token });
+    if(blacklisted) {
+        const error = new Error('Token not valid');
+        error.statusCode = 401;
+        throw error;
+    }
     
     // decode the token to get user details and then use the users ID to check if it still exists
     const decoded = jwt.verify(token, JWT_SECRET);
@@ -31,6 +40,8 @@ try{
         error.statusCode = 401;
         throw error;     
     }
+
+
 
     req.user = user;
     next()
