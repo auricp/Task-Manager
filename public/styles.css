@@ -1,0 +1,213 @@
+/* Dark Theme with Color Accents */
+:root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-elevated: #252525;
+    --text-primary: #f8f8f8;
+    --text-secondary: #b0b0b0;
+    --accent-primary: #7c4dff;
+    --accent-secondary: #536dfe;
+    --error: #cf6679;
+    --success: #03dac6;
+    --warning: #ffb74d;
+    --border: #303030;
+    --shadow: rgba(0, 0, 0, 0.3);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+  
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Navigation */
+  nav {
+    background-color: var(--bg-secondary);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .site-title h1 {
+    color: var(--accent-primary);
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+  }
+  
+  .site-title p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  
+  nav ul {
+    display: flex;
+    list-style: none;
+  }
+  
+  nav li {
+    margin-left: 20px;
+  }
+  
+  nav a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  nav a:hover {
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+  }
+  
+  /* Content */
+  h2 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin: 30px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-secondary);
+  }
+  
+  .post {
+    background-color: var(--bg-elevated);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 6px var(--shadow);
+    transition: transform 0.2s ease;
+  }
+  
+  .post:hover {
+    transform: translateY(-3px);
+  }
+  
+  .post h3 {
+    color: var(--accent-secondary);
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+  }
+  
+  .post p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  
+  .post hr {
+    border: none;
+    height: 1px;
+    background-color: var(--border);
+    margin: 15px 0;
+  }
+  
+  .task-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  /* Button styles */
+  button, .button {
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover, .button:hover {
+    background-color: var(--accent-secondary);
+    transform: translateY(-2px);
+  }
+  
+  .btn-edit {
+    background-color: var(--warning);
+    color: var(--bg-primary);
+  }
+  
+  .btn-edit:hover {
+    background-color: #ffa726;
+  }
+  
+  .btn-delete {
+    background-color: var(--error);
+  }
+  
+  .btn-delete:hover {
+    background-color: #ff4081;
+  }
+  
+  /* Empty state */
+  p:last-child {
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 40px 0;
+  }
+  
+  /* Form elements */
+  input, textarea, select {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 15px;
+    width: 100%;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+  }
+  
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    nav {
+      flex-direction: column;
+      padding: 15px;
+    }
+    
+    nav ul {
+      margin-top: 15px;
+    }
+    
+    .site-title {
+      text-align: center;
+    }
+    
+    .task-actions {
+      flex-direction: column;
+    }
+    
+    .task-actions button {
+      width: 100%;
+    }
+  }

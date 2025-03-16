@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import Blacklist from '../models/blacklist.model.js';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/env.js';
+//import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -88,7 +89,8 @@ export const signIn = async (req, res, next) => {
         }
 
         // create a new token using jwt.sign with the userId and secret
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+        // include sessionID to get a unique token each time (no blacklist issues)
+        const token = jwt.sign({ userId: user._id , iat: Date.now()}, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
 
 
         // send the response with the token
@@ -120,11 +122,19 @@ export const signOut = async (req, res, next) => {
             throw error;
         }
         
+        // decode token and get sessionId
+        const decoded = jwt.decode(token);
+
+        if (!decoded) {
+            const error = new Error('Invalid token');
+            error.statusCode = 401;
+            throw error;
+        }
 
         // create an entry for the blacklisted token and its expiry date (when it expires it will be removed)
         await Blacklist.create({
             token,
-            expiresAt: jwt.decode(token).exp * 1000
+            expiresAt: decoded.exp * 1000
         });
 
         res.status(200).send({

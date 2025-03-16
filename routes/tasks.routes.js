@@ -1,6 +1,6 @@
 // file to declare task routes
 import { Router } from 'express';
-import { createTask, getTask } from '../controllers/tasks.controller.js'
+import { createTask, deleteTask, getTask } from '../controllers/tasks.controller.js'
 import { authorize } from '../middlewares/authentication.middleware.js';
 
 // will import controllers from controller file
@@ -12,5 +12,8 @@ taskRouter.post('/', authorize, createTask);
 
 // get all of your tasks (user)
 taskRouter.get('/', authorize, getTask);
+
+taskRouter.delete('/:id', deleteTask);
+
 
 export default taskRouter;

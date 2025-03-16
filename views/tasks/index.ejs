@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <%- include('../partials/head') %>
+    <body>
+
+        <%- include('../partials/nav') %>
+        <div class="content-wrapper">
+            <h2>All Tasks</h2>
+        </div>
+
+        <% if(tasks.length > 0) { %>
+            <% tasks.forEach(task => { %>
+                <div class="post content">
+                    <h3><%= task.name %></h3>
+                    <p><%= task.description %></p>
+                    <p>Created at <%= task.createdAt %></p>
+                    <hr>
+                    <div class="task-actions">
+                        <button class="btn-edit" onclick="location.href='/tasks/edit/<%= task._id %>'">Edit</button>
+                        <button class="btn-delete" onclick="deleteTask('<%= task._id %>')">Delete</button>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No Tasks to Show</p>
+        <% } %>
+
+        <!-- Send a delete request to the server-->
+        <script>
+            function deleteTask(id) {
+                if(confirm('Are you sure you want to delete this task?')) {
+                    fetch(`/tasks/${id}`, {  // Note the leading slash!
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if(response.ok) {
+                            window.location.reload();
+                        } else {
+                            return response.json()
+                                .then(data => {
+                                    throw new Error(data.message || 'Something went wrong');
+                                })
+                                .catch(() => {
+                                    throw new Error('Something went wrong');
+                                });
+                        }
+                    })
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert(error.message);
+                    });
+                }
+            }
+        </script>
+
+    </body>
+</html>

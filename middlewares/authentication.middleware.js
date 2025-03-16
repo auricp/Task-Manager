@@ -23,8 +23,9 @@ try{
     }
 
     // need to check if token is blacklisted
-    const blacklisted = Blacklist.find({ token });
+    const blacklisted = await Blacklist.findOne({ token });
     if(blacklisted) {
+        console.log(blacklisted)
         const error = new Error('Token not valid');
         error.statusCode = 401;
         throw error;

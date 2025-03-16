@@ -1,6 +1,4 @@
-import mongoose from "mongoose";
 import Task from '../models/task.model.js'
-import User from '../models/user.model.js'
 
 
 export const createTask = async (req, res, next) => {
@@ -29,6 +27,7 @@ export const createTask = async (req, res, next) => {
 export const getTask = async (req, res, next) => {
     try {
         
+        console.log('TASK GETTING')
         // get all Tasks that have the current users user tag (get the userId from authorize func)
         const tasks = await Task.find({ user: req.user._id })
 
@@ -39,5 +38,35 @@ export const getTask = async (req, res, next) => {
 
     } catch (error) {
         next(error);
+    }
+}
+
+
+export const deleteTask = async (req, res, next) => {
+    try {
+        // delete the task
+        res.send({
+            message: 'HERE'
+        }
+        )
+        const id = req.params.id;
+
+        const deleted = await Task.findByIdAndDelete(id);
+
+        if (!deleted) {
+            const error = new Error('Task not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        /*
+        res.status(200).send({
+            success: true,
+            message: 'Task deleted!'
+        })
+        */
+       
+    } catch (error) {
+        next(error)
     }
 }
