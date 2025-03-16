@@ -10,8 +10,8 @@ const taskRouter = Router();
 // create a task for a user (authorize)
 taskRouter.post('/', authorize, createTask);
 
-// get all of your tasks (user)
-taskRouter.get('/', authorize, getTask);
+// get page with all tasks
+taskRouter.get('/:id', authorize, getTask);
 
 // update a task
 taskRouter.put('/:id', editTask);

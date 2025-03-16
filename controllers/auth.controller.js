@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
-import Task from '../models/task.model.js'
 import Blacklist from '../models/blacklist.model.js';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/env.js';
 //import { v4 as uuidv4 } from 'uuid';
@@ -41,15 +40,9 @@ export const signUp = async (req, res, next) =>{
         await session.commitTransaction();
         session.endSession()
 
-        // send a response with a 201 - Created code with some information
-        res.status(201).json({
-            success: true,
-            message: "User created successfully",
-            data: {
-                token,
-                user: newUsers[0]
-            }
-        })
+        // redirect to the sign in page
+        res.redirect('/auth/signIn');
+
 
     } catch(error) {
         // if anything goes wrong we want to stop the transaction and end the session (dont want bad data in our database)
@@ -105,21 +98,9 @@ export const signIn = async (req, res, next) => {
         });
 
         
-        // render the home page with all user tasks
-        Task.find().sort({ createdAt: -1})
-            .then((result) => {
-                res.render('tasks/index', { title: 'Home Page', tasks: result});
-            })
-            .catch((err) => next(err));
+        // redirect to /tasks/:id 
+        res.redirect(`/tasks/${user._id}`);
 
-
-        /*
-        res.status(200).send({
-            success: true,
-            message: 'User is signed in!',
-            user
-        });
-        */
 
     } catch(error){
         next(error);
@@ -164,11 +145,16 @@ export const signOut = async (req, res, next) => {
             sameSite: "Strict"
         });
 
+        // need a success message as well
+        res.redirect('/auth/signIn');
+
+
+        /*
         res.status(200).send({
             success: true,
             message: "User has been signed out successfully!"
         });
-
+        */
 
     } catch (error) {
         next(error);

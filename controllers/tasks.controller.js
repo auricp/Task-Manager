@@ -27,13 +27,30 @@ export const createTask = async (req, res, next) => {
 export const getTask = async (req, res, next) => {
     try {
         
-        // get all Tasks that have the current users user tag (get the userId from authorize func)
-        const tasks = await Task.find({ user: req.user._id })
+        // get all tasks from the specific user
+        const id = req.params.id;
 
-        res.status(200).send({
-            success: true,
-            data: tasks
+        // get all Tasks that have the current users user tag (get the userId from authorize func)
+        const tasks = await Task.find({ user: id })
+
+        res.render('tasks/index', { title: 'Home Page', tasks: tasks || []});
+
+
+        // render home page
+        /*
+        Task.findById(id)
+            .then((result) => {
+                res.render('tasks/index', { title: 'Home Page', tasks: result || []});
+            })
+            .catch((err) => next(err));
+        */
+        /*
+        Task.find().sort({ createdAt: -1})
+        .then((result) => {
+            res.render('tasks/index', { title: 'Home Page', tasks: result});
         })
+        .catch((err) => next(err));
+        */
 
     } catch (error) {
         next(error);

@@ -9,8 +9,6 @@ import authRouter from './routes/auth.routes.js';
 
 import errorMiddleware from './middlewares/error.middleware.js';
 
-import Task from './models/task.model.js'
-
 
 const app = express();
 
@@ -43,6 +41,20 @@ mongoose.connect(DB_URI)
     })
 
 
+// sign-in page
+app.get('/', (req,res) => {
+    res.redirect('auth/signIn');
+})
+
+
+app.get('/auth/signIn', (req,res) => {
+    res.render('auth/signIn')
+})
+
+app.get('/auth/signUp', (req,res) => {
+    res.render('auth/signUp')
+})
+
 
 // Using routes 
 app.use('/auth', authRouter);
@@ -63,14 +75,8 @@ app.get('/', (req,res, next) => {
 })
 */
 
-// sign-in page
-app.get('/', (req,res) => {
-    res.render('auth/signIn');
-})
 
-app.get('/auth/signUp', (req,res) => {
-    res.render('auth/signUp')
-})
+// main page
 
 
 
