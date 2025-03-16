@@ -5,7 +5,11 @@
 
         <%- include('../partials/nav') %>
         <div class="content-wrapper">
-            <h2>All Tasks</h2>
+            <div class="header-actions">
+                <h2>All Tasks</h2>
+                <button class="btn-new-task" onclick="openNewTaskForm()">New Task</button>
+                <a href="/auth/sign-out" class="btn-signout">Sign Out</a>
+            </div>
         </div>
 
         <% if(tasks.length > 0) { %>
@@ -16,7 +20,7 @@
                     <p>Created at <%= task.createdAt %></p>
                     <hr>
                     <div class="task-actions">
-                        <button class="btn-edit" onclick="location.href='/tasks/edit/<%= task._id %>'">Edit</button>
+                        <button class="btn-edit" onclick="openEditTaskForm('<%= task._id %>', '<%= task.name %>', '<%= task.description %>')">Edit</button>
                         <button class="btn-delete" onclick="deleteTask('<%= task._id %>')">Delete</button>
                     </div>
                 </div>
@@ -25,6 +29,53 @@
             <p>No Tasks to Show</p>
         <% } %>
 
+        <!-- New Task Form Popup -->
+        <div id="newTaskFormPopup" class="form-popup">
+            <div class="form-popup-content">
+                <span class="close-btn" onclick="closeNewTaskForm()">&times;</span>
+                <h2>Create New Task</h2>
+                <form id="newTaskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name:</label>
+                        <input type="text" id="taskName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description:</label>
+                        <textarea id="taskDescription" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeNewTaskForm()">Cancel</button>
+                        <button type="submit" class="btn-submit">Create Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+        <!-- Edit Task Form Popup -->
+        <div id="editTaskFormPopup" class="form-popup">
+            <div class="form-popup-content">
+                <span class="close-btn" onclick="closeEditTaskForm()">&times;</span>
+                <h2>Edit Task</h2>
+                <form id="editTaskForm">
+                    <input type="hidden" id="editTaskId" name="taskId">
+                    <div class="form-group">
+                        <label for="editTaskName">Task Name:</label>
+                        <input type="text" id="editTaskName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTaskDescription">Description:</label>
+                        <textarea id="editTaskDescription" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeEditTaskForm()">Cancel</button>
+                        <button type="submit" class="btn-submit">Update Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
         <!-- Send a delete request to the server-->
         <script>
             function deleteTask(id) {
@@ -57,6 +108,120 @@
                     });
                 }
             }
+
+
+            // New Task Form Functions
+            function openNewTaskForm() {
+                document.getElementById('newTaskFormPopup').style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+            }
+
+            function closeNewTaskForm() {
+                document.getElementById('newTaskFormPopup').style.display = 'none';
+                document.body.style.overflow = 'auto'; // Re-enable scrolling
+                document.getElementById('newTaskForm').reset();
+            }
+
+            // Edit Task Form Functions
+            function openEditTaskForm(id, name, description) {
+                // Decode HTML entities in the parameters
+                const decodedName = decodeHTMLEntities(name);
+                const decodedDescription = decodeHTMLEntities(description);
+                
+                document.getElementById('editTaskId').value = id;
+                document.getElementById('editTaskName').value = decodedName;
+                document.getElementById('editTaskDescription').value = decodedDescription;
+                document.getElementById('editTaskFormPopup').style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent scrolling behind modal
+            }
+
+            function closeEditTaskForm() {
+                document.getElementById('editTaskFormPopup').style.display = 'none';
+                document.body.style.overflow = 'auto'; // Re-enable scrolling
+                document.getElementById('editTaskForm').reset();
+            }
+            
+            // Helper function to decode HTML entities
+            function decodeHTMLEntities(text) {
+                const textArea = document.createElement('textarea');
+                textArea.innerHTML = text;
+                return textArea.value;
+            }
+
+            // Form Submissions
+            document.getElementById('newTaskForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('taskName').value,
+                    description: document.getElementById('taskDescription').value
+                };
+                
+                fetch('/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if(response.ok) {
+                        window.location.reload();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Failed to create task');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message);
+                });
+            });
+
+            document.getElementById('editTaskForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const taskId = document.getElementById('editTaskId').value;
+                const formData = {
+                    name: document.getElementById('editTaskName').value,
+                    description: document.getElementById('editTaskDescription').value
+                };
+                
+                fetch(`/tasks/${taskId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if(response.ok) {
+                        window.location.reload();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Failed to update task');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message);
+                });
+            });
+
+            // Close popups when clicking outside of the form
+            window.onclick = function(event) {
+                const newTaskPopup = document.getElementById('newTaskFormPopup');
+                const editTaskPopup = document.getElementById('editTaskFormPopup');
+                
+                if (event.target === newTaskPopup) {
+                    closeNewTaskForm();
+                }
+                if (event.target === editTaskPopup) {
+                    closeEditTaskForm();
+                }
+            };            
         </script>
 
     </body>

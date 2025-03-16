@@ -50,6 +50,7 @@ app.use('/users', userRouter);
 app.use('/tasks', taskRouter);
 
 
+/*
 app.get('/', (req,res, next) => {
 
     Task.find().sort({ createdAt: -1})
@@ -60,6 +61,19 @@ app.get('/', (req,res, next) => {
 
 
 })
+*/
+
+// sign-in page
+app.get('/', (req,res) => {
+    res.render('auth/signIn');
+})
+
+app.get('/auth/signUp', (req,res) => {
+    res.render('auth/signUp')
+})
+
+
+
 
 // using error middleware to catch any errors
 app.use(errorMiddleware);

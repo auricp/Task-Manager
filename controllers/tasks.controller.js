@@ -27,7 +27,6 @@ export const createTask = async (req, res, next) => {
 export const getTask = async (req, res, next) => {
     try {
         
-        console.log('TASK GETTING')
         // get all Tasks that have the current users user tag (get the userId from authorize func)
         const tasks = await Task.find({ user: req.user._id })
 
@@ -41,6 +40,27 @@ export const getTask = async (req, res, next) => {
     }
 }
 
+export const editTask = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const task = await Task.findByIdAndUpdate(id, {
+            name: req.body.name,
+            description: req.body.description
+        })
+
+        res.status(200).send({
+            success: true,
+            data: task
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+
+
+}
 
 export const deleteTask = async (req, res, next) => {
     try {

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import Task from '../models/task.model.js'
 import Blacklist from '../models/blacklist.model.js';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/env.js';
 //import { v4 as uuidv4 } from 'uuid';
@@ -88,20 +89,37 @@ export const signIn = async (req, res, next) => {
             throw error; 
         }
 
+    
         // create a new token using jwt.sign with the userId and secret
         // include sessionID to get a unique token each time (no blacklist issues)
         const token = jwt.sign({ userId: user._id , iat: Date.now()}, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
 
 
-        // send the response with the token
+        // cookie functionality for authentication
+
+        res.cookie("token", token, {
+            httpOnly: true,  // Prevents JavaScript access (XSS protection)
+            secure: true,  // Ensures it's sent only over HTTPS
+            sameSite: "Strict",  // Prevents CSRF attacks
+            maxAge: JWT_EXPIRES_IN * 1000, // Convert seconds to milliseconds
+        });
+
+        
+        // render the home page with all user tasks
+        Task.find().sort({ createdAt: -1})
+            .then((result) => {
+                res.render('tasks/index', { title: 'Home Page', tasks: result});
+            })
+            .catch((err) => next(err));
+
+
+        /*
         res.status(200).send({
             success: true,
             message: 'User is signed in!',
-            data: {
-                token,
-                user
-            }
-        })
+            user
+        });
+        */
 
     } catch(error){
         next(error);
@@ -113,8 +131,10 @@ export const signOut = async (req, res, next) => {
 
     try{
         // blacklist the users token 
-        const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1];
+        //const authHeader = req.headers.authorization;
+        //const token = authHeader && authHeader.split(' ')[1];
+
+        const token = req.cookies.token;
 
         if (!token) {
             const error = new Error('No token provided')
@@ -135,6 +155,13 @@ export const signOut = async (req, res, next) => {
         await Blacklist.create({
             token,
             expiresAt: decoded.exp * 1000
+        });
+
+        // clear the cookie
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict"
         });
 
         res.status(200).send({
