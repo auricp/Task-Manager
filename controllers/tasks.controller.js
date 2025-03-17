@@ -35,23 +35,6 @@ export const getTask = async (req, res, next) => {
 
         res.render('tasks/index', { title: 'Home Page', tasks: tasks || []});
 
-
-        // render home page
-        /*
-        Task.findById(id)
-            .then((result) => {
-                res.render('tasks/index', { title: 'Home Page', tasks: result || []});
-            })
-            .catch((err) => next(err));
-        */
-        /*
-        Task.find().sort({ createdAt: -1})
-        .then((result) => {
-            res.render('tasks/index', { title: 'Home Page', tasks: result});
-        })
-        .catch((err) => next(err));
-        */
-
     } catch (error) {
         next(error);
     }
@@ -96,12 +79,6 @@ export const deleteTask = async (req, res, next) => {
             throw error;
         }
 
-        /*
-        res.status(200).send({
-            success: true,
-            message: 'Task deleted!'
-        })
-        */
        
     } catch (error) {
         next(error)

@@ -67,11 +67,6 @@ app.use('/tasks', taskRouter);
 
 
 
-// main page
-
-
-
-
 // using error middleware to catch any errors
 app.use(errorMiddleware);
 

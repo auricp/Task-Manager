@@ -12,13 +12,6 @@ try{
     // get token from cookies
     let token = req.cookies.token;
 
-    // check to see if the request header starts with Bearer (this is what denotes the token)
-    /*
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        // getting the token from the authorization header
-        token = req.headers.authorization.split(' ')[1]; 
-    }
-    */
 
     if(!token) {
         const error = new Error('Unauthorized');
