@@ -4,7 +4,7 @@
   "description": "A simple task manager to keep track of what you need to do",
   "main": "index.js",
   "engines": {
-    "node": "14.x"
+    "node": "22.x"
   },
   "type": "module",
   "scripts": {
