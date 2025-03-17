@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // middleware for rate limiting and bot prevention
-//app.use(arcjetMiddleware);
+app.use(arcjetMiddleware);
 
 // connect to mongoDB database and start the server
 if (!DB_URI) {
