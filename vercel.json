@@ -6,6 +6,6 @@
             "src": "/(.*)",
             "dest": "/"
         }
-    ],
-    "trailingSlash": true
+    ]
+    //"trailingSlash": true
 }
