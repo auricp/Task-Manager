@@ -8,6 +8,7 @@ import userRouter from './routes/users.routes.js';
 import authRouter from './routes/auth.routes.js';
 
 import errorMiddleware from './middlewares/error.middleware.js';
+import arcjetMiddleware from './middlewares/arcjet.middleware.js';
 
 
 const app = express();
@@ -21,6 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// middleware for rate limiting and bot prevention
+app.use(arcjetMiddleware);
 
 // connect to mongoDB database and start the server
 if (!DB_URI) {
@@ -61,19 +65,6 @@ app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/tasks', taskRouter);
 
-
-/*
-app.get('/', (req,res, next) => {
-
-    Task.find().sort({ createdAt: -1})
-        .then((result) => {
-            res.render('tasks/index', { title: 'Home Page', tasks: result});
-        })
-        .catch((err) => next(err));
-
-
-})
-*/
 
 
 // main page

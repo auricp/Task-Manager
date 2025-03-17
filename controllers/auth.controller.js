@@ -31,10 +31,11 @@ export const signUp = async (req, res, next) =>{
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // create a new user (session is for if something goes wrong and if we abort the transaction then the user will not be created)
-        const newUsers = await User.create([{ username, email, password: hashedPassword }], { session });
+        //const newUsers = await User.create([{ username, email, password: hashedPassword }], { session });
+        await User.create([{ username, email, password: hashedPassword }], { session });
 
         // token is for signin. We use newUsers[0] since when we pass in an array of documents we create it returns the array of new users 
-        const token = jwt.sign( { userId: newUsers[0]._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        //const token = jwt.sign( { userId: newUsers[0]._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
         // commit the transaction and end the session
         await session.commitTransaction();
